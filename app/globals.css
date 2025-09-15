@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: hsl(240 80% 50%);
+  --accent: hsl(10 80% 55%);
+  --bg: hsl(220 15% 95%);
+  --surface: hsl(220 15% 100%);
+  --text-primary: hsl(220 15% 10%);
+  --text-secondary: hsl(220 15% 40%);
+  --border: hsl(220 15% 85%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-bg text-text-primary;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .display {
+    @apply text-3xl font-bold;
+  }
+  
+  .h1 {
+    @apply text-2xl font-semibold;
+  }
+  
+  .body {
+    @apply text-base font-normal;
+  }
+  
+  .caption {
+    @apply text-sm font-medium;
+  }
+  
+  .button-text {
+    @apply text-sm font-semibold;
+  }
+  
+  .container {
+    @apply px-4 max-w-3xl mx-auto;
+  }
+  
+  .ar-overlay {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .statue-glow {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(147, 51, 234, 0.2);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
