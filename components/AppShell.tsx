@@ -20,14 +20,14 @@ export function AppShell({ children, user, activeView, onViewChange }: AppShellP
   ];
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-surface border-b border-border px-4 py-3 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Camera className="w-5 h-5 text-white" />
           </div>
-          <h1 className="h1 text-text-primary">SculptAR</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">SculptAR</h1>
         </div>
         
         {user && <UserProfile user={user} variant="compact" />}
@@ -39,7 +39,7 @@ export function AppShell({ children, user, activeView, onViewChange }: AppShellP
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="bg-surface border-t border-border px-4 py-2">
+      <nav className="bg-white border-t border-gray-200 px-4 py-2">
         <div className="flex items-center justify-around">
           {navItems.map(({ id, label, icon: Icon }) => (
             <button
@@ -47,8 +47,8 @@ export function AppShell({ children, user, activeView, onViewChange }: AppShellP
               onClick={() => onViewChange(id)}
               className={`flex flex-col items-center space-y-1 py-2 px-3 rounded-lg transition-colors duration-200 ${
                 activeView === id
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-border/50'
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               <Icon className="w-5 h-5" />
