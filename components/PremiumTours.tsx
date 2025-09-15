@@ -1,19 +1,67 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, Clock, Users, Play, ShoppingCart } from 'lucide-react';
 import type { PremiumTour } from '../lib/types';
-import { mockPremiumTours } from '../lib/mockData';
 import { formatPrice } from '../lib/utils';
 
 export function PremiumTours() {
-  const [tours] = useState<PremiumTour[]>(mockPremiumTours);
+  const [tours, setTours] = useState<PremiumTour[]>([]);
   const [selectedTour, setSelectedTour] = useState<PremiumTour | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handlePurchase = (tour: PremiumTour) => {
-    // Here you would integrate with payment processing
-    console.log('Purchasing tour:', tour.title);
-    alert(`Purchasing ${tour.title} for ${formatPrice(tour.price)}`);
+  useEffect(() => {
+    fetchTours();
+  }, []);
+
+  const fetchTours = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch('/api/tours');
+      if (response.ok) {
+        const data = await response.json();
+        setTours(data.tours);
+      } else {
+        throw new Error('Failed to fetch tours');
+      }
+    } catch (err) {
+      console.error('Error fetching tours:', err);
+      setError('Failed to load tours');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePurchase = async (tour: PremiumTour) => {
+    try {
+      const paymentData = {
+        tourId: tour.tourId,
+        userId: 'current-user', // In production, get from auth context
+        amount: tour.price,
+      };
+
+      const response = await fetch('/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ Payment successful! You now have access to "${tour.title}". Transaction: ${data.payment.transactionHash}`);
+      } else {
+        const error = await response.json();
+        alert(`❌ Payment failed: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('❌ Payment failed. Please try again.');
+    }
   };
 
   if (selectedTour) {
@@ -103,7 +151,49 @@ export function PremiumTours() {
       </div>
 
       <div className="space-y-4">
-        {tours.map((tour) => (
+        {loading ? (
+          // Loading state
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-surface rounded-lg shadow-card overflow-hidden animate-pulse">
+              <div className="h-32 bg-border"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-6 bg-border rounded w-3/4"></div>
+                <div className="h-4 bg-border rounded w-full"></div>
+                <div className="h-4 bg-border rounded w-2/3"></div>
+                <div className="flex justify-between items-center">
+                  <div className="flex space-x-4">
+                    <div className="h-4 bg-border rounded w-12"></div>
+                    <div className="h-4 bg-border rounded w-8"></div>
+                    <div className="h-4 bg-border rounded w-6"></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-border rounded-full"></div>
+                    <div className="h-4 bg-border rounded w-20"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : error ? (
+          // Error state
+          <div className="text-center py-8">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={fetchTours}
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        ) : tours.length === 0 ? (
+          // Empty state
+          <div className="text-center py-8">
+            <p className="body text-text-secondary">No premium tours available at the moment.</p>
+          </div>
+        ) : (
+          tours.map((tour) => (
           <div
             key={tour.tourId}
             className="bg-surface rounded-lg shadow-card overflow-hidden cursor-pointer hover:shadow-lifted transition-shadow duration-200"
@@ -159,7 +249,8 @@ export function PremiumTours() {
               </div>
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* CTA Section */}

@@ -5,7 +5,6 @@ import { ArrowLeft, Plus, MessageCircle, ThumbsUp, Volume2, Play } from 'lucide-
 import { AnnotationBubble } from './AnnotationBubble';
 import { CommentThread } from './CommentThread';
 import type { Statue, Annotation, Comment } from '../lib/types';
-import { mockAnnotations, mockComments } from '../lib/mockData';
 
 interface ARViewerProps {
   statue: Statue;
@@ -20,40 +19,74 @@ export function ARViewer({ statue, onBack }: ARViewerProps) {
   const [isAddingAnnotation, setIsAddingAnnotation] = useState(false);
 
   useEffect(() => {
-    // Load annotations and comments for this statue
-    const statueAnnotations = mockAnnotations.filter(a => a.statueId === statue.statueId);
-    const statueComments = mockComments.filter(c => c.statueId === statue.statueId);
-    
-    setAnnotations(statueAnnotations);
-    setComments(statueComments);
+    fetchAnnotationsAndComments();
   }, [statue.statueId]);
+
+  const fetchAnnotationsAndComments = async () => {
+    try {
+      // Fetch annotations
+      const annotationsResponse = await fetch(`/api/annotations?statueId=${statue.statueId}`);
+      if (annotationsResponse.ok) {
+        const annotationsData = await annotationsResponse.json();
+        setAnnotations(annotationsData.annotations);
+      }
+
+      // Fetch comments
+      const commentsResponse = await fetch(`/api/comments?statueId=${statue.statueId}`);
+      if (commentsResponse.ok) {
+        const commentsData = await commentsResponse.json();
+        setComments(commentsData.comments);
+      }
+    } catch (error) {
+      console.error('Error fetching annotations and comments:', error);
+    }
+  };
 
   const handleAnnotationClick = (annotation: Annotation) => {
     setSelectedAnnotation(annotation);
   };
 
-  const handleAddAnnotation = (x: number, y: number) => {
+  const handleAddAnnotation = async (x: number, y: number) => {
     if (!isAddingAnnotation) return;
-    
-    // Create new annotation at clicked position
-    const newAnnotation: Annotation = {
-      annotationId: `new-${Date.now()}`,
-      statueId: statue.statueId,
-      userId: 'current-user',
-      type: 'text',
-      content: 'New annotation...',
-      region: { x: x / 100, y: y / 100, width: 0.1, height: 0.1 },
-      createdAt: new Date().toISOString(),
-      votes: 0,
-      author: {
-        username: 'You',
-        avatar: '/avatars/default.jpg'
+
+    try {
+      const annotationData = {
+        statueId: statue.statueId,
+        userId: 'current-user', // In production, get from auth context
+        type: 'text' as const,
+        content: 'New annotation...',
+        region: {
+          x: x / 100,
+          y: y / 100,
+          width: 0.1,
+          height: 0.1
+        },
+        author: {
+          username: 'You',
+          avatar: '/avatars/default.jpg'
+        }
+      };
+
+      const response = await fetch('/api/annotations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(annotationData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAnnotations([...annotations, data.annotation]);
+        setSelectedAnnotation(data.annotation);
+      } else {
+        console.error('Failed to create annotation');
       }
-    };
-    
-    setAnnotations([...annotations, newAnnotation]);
-    setIsAddingAnnotation(false);
-    setSelectedAnnotation(newAnnotation);
+    } catch (error) {
+      console.error('Error creating annotation:', error);
+    } finally {
+      setIsAddingAnnotation(false);
+    }
   };
 
   return (
