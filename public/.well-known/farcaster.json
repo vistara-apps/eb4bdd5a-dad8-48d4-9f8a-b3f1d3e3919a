@@ -1,0 +1,30 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "SculptAR Stories",
+    "subtitle": "Built with Zara",
+    "description": "SculptAR Stories is a Base Mini App built with Zara.",
+    "iconUrl": "https://0co.to/images/zara-2.png",
+    "homeUrl": "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app",
+    "splashImageUrl": "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "heroImageUrl": "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app/image.png",
+    "tagline": "SculptAR Stories",
+    "screenshotUrls": [
+      "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app/screenshot.png",
+      "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app/screenshot.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "base",
+      "miniapp",
+      "onchainkit"
+    ],
+    "webhookUrl": "https://eb4bdd5adad848d49f8ab3f1d3e3919a-anp1.vercel.app/api/webhook"
+  }
+}

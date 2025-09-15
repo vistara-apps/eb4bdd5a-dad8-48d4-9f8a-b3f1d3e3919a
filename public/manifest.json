@@ -1,0 +1,14 @@
+{
+  "name": "SculptAR Stories",
+  "description": "SculptAR Stories is a Base Mini App built with Zara.",
+  "image": "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=OG",
+  "external_url": "https://eb4bdd5a-dad8-48d4-9f8a-b3f1d3e3919a.vercel.app",
+  "properties": {
+    "app": {
+      "name": "SculptAR Stories",
+      "description": "SculptAR Stories is a Base Mini App built with Zara.",
+      "url": "https://eb4bdd5a-dad8-48d4-9f8a-b3f1d3e3919a.vercel.app",
+      "icon": "https://0co.to/images/zara-2.png"
+    }
+  }
+}
